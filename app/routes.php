@@ -13,5 +13,24 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+    if(!Auth::user())
+	    return View::make('login');
+    else
+        return View::make('index');
+});
+
+Route::get('/login', [function(){
+    return View::make('login');
+}]);
+
+Route::post('/login', ['uses'=>'HomeController@login']);
+
+/***  Grupo para login 'requerido' */
+Route::group(['before' => 'auth'], function(){
+    Route::get('/logout', [function(){
+        Session::clear();
+        return Redirect::to('/');
+    }]);
+
+    Route::resource('users', 'UsersController');
 });
